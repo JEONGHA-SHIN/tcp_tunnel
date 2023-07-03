@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Opened-Tunnel</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.contextMenu.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <h1>Manage Opened-Tunnel</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="ip">IP:</label>
+                    <input type="text" id="ip" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="port">Port:</label>
+                    <input type="text" id="port" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="text" id="password" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="memo">Memo:</label>
+                    <input type="text" id="memo" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--<div class="form-group">
+        <label for="ip">IP:</label>
+        <input type="text" id="ip" class="form-control">
+    </div>
+    
+    <div class="form-group">
+        <label for="port">Port:</label>
+        <input type="text" id="port" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="text" id="password" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="memo">Memo:</label>
+        <input type="text" id="memo" class="form-control">
+    </div>-->
+    <button id="start" class="btn btn-primary">Start Server</button>
+    <h2>Servers:</h2>
+    <table id="servers" class="table">
+        <tr>
+            <th>IP</th>
+            <th>Port</th>
+            <th>Status</th>
+            <th>Memo</th>
+            <th>Actions</th>
+
+        </tr>
+    </table>
+    <h2>Log:</h2>
+    <div id="log"></div>
+    <style>
+        body {
+            padding: 20px;
+        }
+    </style>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.contextMenu.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.ui.position.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.min.js"></script>
+    <script>
+        function getIPAddress() {
+            return $.getJSON('https://api64.ipify.org?format=json').then(function(response) {
+                return response.ip;
+            }).catch(function() {
+                throw new Error('Failed to get IP address');
+            });
+        }
+        $(document).ready(function() {
+            function updateServers() {
+                $.get('/get_servers', function(data) {
+                    $('#servers').empty();
+                    $.each(data, function(i, server) {
+                        var row = '<tr id="' + server.port + '"><td>' + server.ip + '</td><td>' + server.port + '</td><td></td><td>' + server.memo + '</td><td><button class="edit-memo">Edit Memo</button></td></tr>';
+                        $('#servers').append(row);
+                        $.post('/get_server_status', { ip: server.ip, port: server.port }, function(status) {
+                            $('#' + server.port + ' td:nth-child(3)').text(status);
+                        });
+                    });
+                });
+
+            }
+
+            $('#start').click(function() {
+                var ip = $('#ip').val();
+                var port = $('#port').val();
+                var password = $('#password').val();
+                var memo = $('#memo').val();
+                $.post('/start_tunnel_server', { ip: ip, port: port, password: password, memo: memo }, function(data) {
+                    $('#log').append('<p>' + data + '</p>');
+                    updateServers();
+                });
+            });
+
+            $.contextMenu({
+                selector: '#servers tr',
+                callback: function(key, options) {
+                    var port = $(this).attr('id');
+                    if (key === 'restart') {
+                        $.post('/restart_tunnel_server', { port: port }, function(data) {
+                            $('#log').append('<p>' + data + '</p>');
+                            updateServers();
+                        });
+                    } else if (key === 'stop') {
+                        $.post('/stop_tunnel_server', { port: port }, function(data) {
+                            $('#log').append('<p>' + data + '</p>');
+                            updateServers();
+                        });
+                    }
+                },
+                items: {
+                    "restart": {name: "Restart", icon: "edit"},
+                    "stop": {name: "Stop", icon: "delete"}
+                }
+            });
+            $(document).on('click', '.edit-memo', function() {
+                var port = $(this).closest('tr').attr('id');
+                var memo = prompt('Enter a new memo:');
+                if (memo) {
+                    $.post('/update_memo', { port: port, memo: memo }, function(data) {
+                        updateServers();
+                    });
+                }
+            });
+            getIPAddress().then(function(ipAddress) {
+                document.getElementById('ip').value = ipAddress;
+            }).catch(function(error) {
+                console.error(error);
+            });
+            updateServers();
+        });
+        
+    </script>
+    
+</body>
+</html>
