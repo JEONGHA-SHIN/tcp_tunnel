@@ -41,24 +41,49 @@
             </div>
         </div>
     </div>
-    
-    <!--<div class="form-group">
-        <label for="ip">IP:</label>
-        <input type="text" id="ip" class="form-control">
+    <h1>Manage Local Server</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="target_ip">Target IP:</label>
+                    <input type="text" id="target_ip" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="target_port">Target Port:</label>
+                    <input type="text" id="target_port" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="bind_port">Bind Port:</label>
+                    <input type="text" id="bind_port" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="server_port">Server Port:</label>
+                    <input type="text" id="server_port" class="form-control">
+                </div>
+            </div>
+        </div>
+        <!-- ... -->
     </div>
-    
-    <div class="form-group">
-        <label for="port">Port:</label>
-        <input type="text" id="port" class="form-control">
-    </div>
-    <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="text" id="password" class="form-control">
-    </div>
-    <div class="form-group">
-        <label for="memo">Memo:</label>
-        <input type="text" id="memo" class="form-control">
-    </div>-->
+    <button id="start_local" class="btn btn-primary">Start Local Server</button>
+    <h2>Local Servers:</h2>
+    <table id="local_servers" class="table">
+        <tr>
+            <th>Target IP</th>
+            <th>Target Port</th>
+            <th>Bind Port</th>
+            <th>Server Port</th>
+            <th>Memo</th>
+            <th>Actions</th>
+        </tr>
+    </table>
+
     <button id="start" class="btn btn-primary">Start Server</button>
     <h2>Servers:</h2>
     <table id="servers" class="table">
@@ -113,6 +138,18 @@
                 var password = $('#password').val();
                 var memo = $('#memo').val();
                 $.post('/start_tunnel_server', { ip: ip, port: port, password: password, memo: memo }, function(data) {
+                    $('#log').append('<p>' + data + '</p>');
+                    updateServers();
+                });
+            });
+            $('#start_local').click(function() {
+                var target_ip = $('#target_ip').val();
+                var target_port = $('#target_port').val();
+                var bind_port = $('#bind_port').val();
+                var server_port = $('#server_port').val();
+                var password = $('#password').val();
+                var memo = $('#memo').val();
+                $.post('/start_local_server', { target_ip: target_ip, target_port: target_port, bind_port: bind_port, server_port: server_port, password: password, memo: memo }, function(data) {
                     $('#log').append('<p>' + data + '</p>');
                     updateServers();
                 });

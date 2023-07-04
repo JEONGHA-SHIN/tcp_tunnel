@@ -16,7 +16,7 @@ def main():
         
     elif args.local:
         app = create_local_app()
-        app.run(port=args.port)
+        app.run(host='0.0.0.0', debug=True, port=args.port)
 
 if __name__ == '__main__':
     main()
