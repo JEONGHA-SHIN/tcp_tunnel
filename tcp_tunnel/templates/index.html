@@ -10,7 +10,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Manage Opened-Tunnel</h1>
+    <h1>Manage Exposed Server</h1>
     <div class="container">
         <div class="row">
             <div class="col">
@@ -41,6 +41,18 @@
             </div>
         </div>
     </div>
+    <button id="start" class="btn btn-primary">Start Server</button>
+    <h2>Servers:</h2>
+    <table id="servers" class="table">
+        <tr>
+            <th>IP</th>
+            <th>Port</th>
+            <th>Status</th>
+            <th>Memo</th>
+            <th>Actions</th>
+
+        </tr>
+    </table>
     <h1>Manage Local Server</h1>
     <div class="container">
         <div class="row">
@@ -64,12 +76,17 @@
             </div>
             <div class="col">
                 <div class="form-group">
+                    <label for="server_ip">Server IP:</label>
+                    <input type="text" id="server_ip" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
                     <label for="server_port">Server Port:</label>
                     <input type="text" id="server_port" class="form-control">
                 </div>
             </div>
         </div>
-        <!-- ... -->
     </div>
     <button id="start_local" class="btn btn-primary">Start Local Server</button>
     <h2>Local Servers:</h2>
@@ -78,24 +95,13 @@
             <th>Target IP</th>
             <th>Target Port</th>
             <th>Bind Port</th>
+            <th>Server IP</th>
             <th>Server Port</th>
             <th>Memo</th>
             <th>Actions</th>
         </tr>
     </table>
-
-    <button id="start" class="btn btn-primary">Start Server</button>
-    <h2>Servers:</h2>
-    <table id="servers" class="table">
-        <tr>
-            <th>IP</th>
-            <th>Port</th>
-            <th>Status</th>
-            <th>Memo</th>
-            <th>Actions</th>
-
-        </tr>
-    </table>
+    
     <h2>Log:</h2>
     <div id="log"></div>
     <style>
@@ -146,6 +152,7 @@
                 var target_ip = $('#target_ip').val();
                 var target_port = $('#target_port').val();
                 var bind_port = $('#bind_port').val();
+                var server_ip = $('#server_ip').val();
                 var server_port = $('#server_port').val();
                 var password = $('#password').val();
                 var memo = $('#memo').val();
