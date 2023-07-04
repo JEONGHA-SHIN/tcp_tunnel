@@ -70,8 +70,8 @@
             </div>
             <div class="col">
                 <div class="form-group">
-                    <label for="bind_port">Bind Port:</label>
-                    <input type="text" id="bind_port" class="form-control">
+                    <label for="open_port">Open Port:</label>
+                    <input type="text" id="open_port" class="form-control">
                 </div>
             </div>
             <div class="col">
@@ -82,8 +82,8 @@
             </div>
             <div class="col">
                 <div class="form-group">
-                    <label for="server_port">Server Port:</label>
-                    <input type="text" id="server_port" class="form-control">
+                    <label for="bind_port">Bind Port:</label>
+                    <input type="text" id="bind_port" class="form-control">
                 </div>
             </div>
         </div>
@@ -94,9 +94,9 @@
         <tr>
             <th>Target IP</th>
             <th>Target Port</th>
-            <th>Bind Port</th>
+            <th>Open Port</th>
             <th>Server IP</th>
-            <th>Server Port</th>
+            <th>Bind Port</th>
             <th>Memo</th>
             <th>Actions</th>
         </tr>
@@ -137,6 +137,16 @@
                 });
 
             }
+            function updateLocalServers() {
+                $.get('/get_local_servers', function(data) {
+                    $('#local_servers').empty();
+                    $.each(data, function(i, server) {
+                        var row = '<tr id="' + server.bind_port + '"><td>' + server.target_ip + '</td><td>' + server.target_port + '</td><td>' + server.open_port + '</td><td>' + server.server_ip + '</td><td>' + server.bind_port + '</td><td>' + server.memo + '</td><td><button class="edit-memo">Edit Memo</button></td></tr>';
+                        $('#local_servers').append(row);
+                        // If you have a way to get the status of local servers, you can update the status here.
+                    });
+                });
+            }
 
             $('#start').click(function() {
                 var ip = $('#ip').val();
@@ -151,14 +161,14 @@
             $('#start_local').click(function() {
                 var target_ip = $('#target_ip').val();
                 var target_port = $('#target_port').val();
-                var bind_port = $('#bind_port').val();
+                var open_port = $('#open_port').val();
                 var server_ip = $('#server_ip').val();
-                var server_port = $('#server_port').val();
+                var bind_port = $('#bind_port').val();
                 var password = $('#password').val();
                 var memo = $('#memo').val();
-                $.post('/start_local_server', { target_ip: target_ip, target_port: target_port, bind_port: bind_port, server_port: server_port, password: password, memo: memo }, function(data) {
+                $.post('/start_local_server', { target_ip: target_ip, target_port: target_port, open_port: open_port, server_ip: server_ip, bind_port: bind_port, password: password, memo: memo }, function(data) {
                     $('#log').append('<p>' + data + '</p>');
-                    updateServers();
+                    updateLocalServers();
                 });
             });
 
@@ -183,7 +193,7 @@
                     "stop": {name: "Stop", icon: "delete"}
                 }
             });
-            $(document).on('click', '.edit-memo', function() {
+            $(document).on('click', '#servers .edit-memo', function() {
                 var port = $(this).closest('tr').attr('id');
                 var memo = prompt('Enter a new memo:');
                 if (memo) {
@@ -192,6 +202,40 @@
                     });
                 }
             });
+            // Context menu for local servers
+            $.contextMenu({
+                selector: '#local_servers tr',
+                callback: function(key, options) {
+                    var bind_port = $(this).attr('id');
+                    if (key === 'restart') {
+                        $.post('/restart_local_server', { bind_port: bind_port }, function(data) {
+                            $('#log').append('<p>' + data + '</p>');
+                            updateLocalServers();
+                        });
+                    } else if (key === 'stop') {
+                        $.post('/stop_local_server', { bind_port: bind_port }, function(data) {
+                            $('#log').append('<p>' + data + '</p>');
+                            updateLocalServers();
+                        });
+                    }
+                },
+                items: {
+                    "restart": {name: "Restart", icon: "edit"},
+                    "stop": {name: "Stop", icon: "delete"}
+                }
+            });
+
+            // Edit memo for local servers
+            $(document).on('click', '#local_servers .edit-memo', function() {
+                var bind_port = $(this).closest('tr').attr('id');
+                var memo = prompt('Enter a new memo:');
+                if (memo) {
+                    $.post('/update_local_memo', { bind_port: bind_port, memo: memo }, function(data) {
+                        updateLocalServers();
+                    });
+                }
+            });
+
             getIPAddress().then(function(ipAddress) {
                 document.getElementById('ip').value = ipAddress;
             }).catch(function(error) {
