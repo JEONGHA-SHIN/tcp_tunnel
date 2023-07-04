@@ -12,7 +12,7 @@ def main():
 
     if args.exposed:
         app = create_exposed_app()
-        app.run(debug=True, port=args.port)
+        app.run(host='0.0.0.0', debug=True, port=args.port)
         
     elif args.local:
         app = create_local_app()
