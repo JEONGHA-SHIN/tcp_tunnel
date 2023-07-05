@@ -10,100 +10,110 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Manage Exposed Server</h1>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <div class="form-group">
-                    <label for="ip">IP:</label>
-                    <input type="text" id="ip" class="form-control">
+                <h1>Manage Exposed Server</h1>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="ip">IP:</label>
+                                <input type="text" id="ip" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="port">Port:</label>
+                                <input type="text" id="port" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="text" id="password" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="memo">Memo:</label>
+                                <input type="text" id="memo" class="form-control">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col">
-                <div class="form-group">
-                    <label for="port">Port:</label>
-                    <input type="text" id="port" class="form-control">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="text" id="password" class="form-control">
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-group">
-                    <label for="memo">Memo:</label>
-                    <input type="text" id="memo" class="form-control">
-                </div>
-            </div>
-        </div>
-    </div>
-    <button id="start" class="btn btn-primary">Start Server</button>
-    <h2>Servers:</h2>
-    <table id="servers" class="table">
-        <tr>
-            <th>IP</th>
-            <th>Port</th>
-            <th>Status</th>
-            <th>Memo</th>
-            <th>Actions</th>
+                <button id="start" class="btn btn-primary">Start Server</button>
+                <h2>Servers:</h2>
+                <table id="servers" class="table">
+                    <tr>
+                        <th>IP</th>
+                        <th>Port</th>
+                        <th>Status</th>
+                        <th>Memo</th>
+                        <th>Actions</th>
 
-        </tr>
-    </table>
-    <h1>Manage Local Server</h1>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="form-group">
-                    <label for="target_ip">Target IP:</label>
-                    <input type="text" id="target_ip" class="form-control">
-                </div>
+                    </tr>
+                </table>
             </div>
-            <div class="col">
-                <div class="form-group">
-                    <label for="target_port">Target Port:</label>
-                    <input type="text" id="target_port" class="form-control">
+            <div class="col">    
+                <h1>Manage Local Server</h1>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="target_ip">Target IP:</label>
+                                <input type="text" id="target_ip" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="target_port">Target Port:</label>
+                                <input type="text" id="target_port" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="open_port">Open Port:</label>
+                                <input type="text" id="open_port" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="server_ip">Server IP:</label>
+                                <input type="text" id="server_ip" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="bind_port">Bind Port:</label>
+                                <input type="text" id="bind_port" class="form-control">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col">
-                <div class="form-group">
-                    <label for="open_port">Open Port:</label>
-                    <input type="text" id="open_port" class="form-control">
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-group">
-                    <label for="server_ip">Server IP:</label>
-                    <input type="text" id="server_ip" class="form-control">
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-group">
-                    <label for="bind_port">Bind Port:</label>
-                    <input type="text" id="bind_port" class="form-control">
-                </div>
+                <button id="start_local" class="btn btn-primary">Start Local Server</button>
+                <h2>Local Servers:</h2>
+                <table id="local_servers" class="table">
+                    <tr>
+                        <th>Target IP</th>
+                        <th>Target Port</th>
+                        <th>Open Port</th>
+                        <th>Server IP</th>
+                        <th>Bind Port</th>
+                        <th>Memo</th>
+                        <th>Actions</th>
+                    </tr>
+                </table>
             </div>
         </div>
-    </div>
-    <button id="start_local" class="btn btn-primary">Start Local Server</button>
-    <h2>Local Servers:</h2>
-    <table id="local_servers" class="table">
-        <tr>
-            <th>Target IP</th>
-            <th>Target Port</th>
-            <th>Open Port</th>
-            <th>Server IP</th>
-            <th>Bind Port</th>
-            <th>Memo</th>
-            <th>Actions</th>
-        </tr>
-    </table>
-    
-    <h2>Log:</h2>
-    <div id="log"></div>
+        <div class="row">
+            <div class="col">
+                <h2>Log:</h2>
+                <div id="log"></div>
+            </div>
+        </div>
     <style>
         body {
             padding: 20px;
